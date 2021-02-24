@@ -16,7 +16,7 @@ namespace Dependency_Inversion_SQL.Classes
         private SqlConnection _SqlConnection;
         private SqlCommand _SqlCommand;
         private SqlDataAdapter _SqlDataAdapter;
-        private DataTable _DataTable;
+        private DataSet _DataSet;
         #endregion
 
         #region Properties
@@ -30,34 +30,41 @@ namespace Dependency_Inversion_SQL.Classes
         #endregion
 
         #region Constructors
-        public SQLDatabase(SqlConnection sqlConnection, SqlDataAdapter sqlDataAdapter, DataTable dataTable)
+        public SQLDatabase(SqlConnection sqlConnection, SqlDataAdapter sqlDataAdapter, DataSet dataSet)
         {
             _SqlConnection = sqlConnection;
             _SqlConnection.ConnectionString = _SqlServer;
             _SqlCommand = _SqlConnection.CreateCommand();
             _SqlDataAdapter = sqlDataAdapter;
-            _DataTable = dataTable;
+            _DataSet = dataSet;
         }
         #endregion
 
         #region Methods
-        public void AddParameters(string[] parameter, object[] values)
+        public void AddParameters((string name, object value)[] parameters)
         {
-            for (var i = 0; i < parameter.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
             {
-                _SqlCommand.Parameters.Add(parameter[i]);
-                _SqlCommand.Parameters[parameter[i]].Value = values[i];
+                _SqlCommand.Parameters.AddWithValue(parameters[i].name, parameters[i].value);
             }
         }
 
-        public System.Data.DataTable GetData(string commandText)
+        public System.Data.DataSet GetData(string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, string sourceTable = null)
         {
+            if (sourceTable == null)
+            {
+                sourceTable = "someName";
+            }
+            _DataSet.Clear();
             _SqlCommand.CommandText = commandText;
+            _SqlCommand.CommandType = commandType;
             _SqlDataAdapter.SelectCommand = _SqlCommand;
             _SqlDataAdapter.SelectCommand.Connection.Open();
-            _SqlDataAdapter.Fill(_DataTable);
+            _SqlDataAdapter.Fill(_DataSet, sourceTable);
             _SqlDataAdapter.SelectCommand.Connection.Close();
-            return _DataTable;
+            _SqlCommand.Parameters.Clear();
+            _SqlCommand.CommandText = string.Empty;
+            return _DataSet;
         }
         #endregion
     }

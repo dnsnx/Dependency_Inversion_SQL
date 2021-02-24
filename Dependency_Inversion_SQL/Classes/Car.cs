@@ -19,7 +19,7 @@ namespace Dependency_Inversion_SQL.Classes
         public string GetCarName()
         {
             var result = _Database.GetData("SELECT 'Audi R8' as CarName");
-            return result.Rows[0].ItemArray[0].ToString();
+            return result.Tables[0].Rows[0].ItemArray[0].ToString();
         }
     }
 }

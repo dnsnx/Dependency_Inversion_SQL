@@ -17,7 +17,7 @@ namespace Dependency_Inversion_SQL
 
         public static IDatabase CreateDatabase()
         {
-            return new SQLDatabase(CreateDatabaseConnection(), CreateDatabaseAdapater(), CreateDatabaseDataTable());
+            return new SQLDatabase(CreateDatabaseConnection(), CreateDatabaseAdapater(), CreateDatabaseDataSet());
         }
 
         public static System.Data.SqlClient.SqlConnection CreateDatabaseConnection()
@@ -30,9 +30,9 @@ namespace Dependency_Inversion_SQL
             return new System.Data.SqlClient.SqlDataAdapter();
         }
 
-        public static System.Data.DataTable CreateDatabaseDataTable()
+        public static System.Data.DataSet CreateDatabaseDataSet()
         {
-            return new System.Data.DataTable();
+            return new System.Data.DataSet();
         }
     }
 }

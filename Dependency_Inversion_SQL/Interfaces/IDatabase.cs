@@ -8,8 +8,8 @@ namespace Dependency_Inversion_SQL.Interfaces
 {
     public interface IDatabase
     {
-        void AddParameters(string[] parameter, object[] values);
+        void AddParameters((string name, object value)[] parameters);
 
-        System.Data.DataTable GetData(string commandText);
+        System.Data.DataSet GetData(string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, string sourceTable = null);
     }
 }
